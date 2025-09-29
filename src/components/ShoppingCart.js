@@ -131,9 +131,12 @@ export default function ShoppingCartComponent({ isOpen, onClose, cartItems, onUp
                 </span>
               </div>
 
-              {/* Checkout Button */}
-              <button className="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
-                Proceed to Checkout
+              {/* Payment Method Button */}
+              <button 
+                onClick={() => window.open('https://wa.me/03098789014', '_blank')}
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+              >
+                Payment Method
               </button>
 
               {/* Continue Shopping */}

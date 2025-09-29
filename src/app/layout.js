@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google'
 import './globals.css'
 import WiFiRestriction from '@/components/WiFiRestriction'
+import ChatWidget from '@/components/ChatWidget'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,6 +15,8 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <WiFiRestriction />
+        {/* Chat Widget */}
+        <ChatWidget />
         {children}
       </body>
     </html>

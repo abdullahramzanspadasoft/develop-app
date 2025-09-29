@@ -26,6 +26,36 @@ export default function SignUp() {
   const [success, setSuccess] = useState(false)
   const router = useRouter()
 
+  // Notification function
+  const showWelcomeNotification = async (userName) => {
+    // Check if browser supports notifications
+    if (!('Notification' in window)) {
+      console.log('This browser does not support notifications')
+      return
+    }
+
+    // Request permission if not granted
+    if (Notification.permission === 'default') {
+      const permission = await Notification.requestPermission()
+      if (permission !== 'granted') {
+        console.log('Notification permission denied')
+        return
+      }
+    }
+
+    // Show notification
+    if (Notification.permission === 'granted') {
+      new Notification('🎉 Welcome to Watch Store!', {
+        body: `Hello ${userName}! Your account has been created successfully. Start exploring our amazing watch collection!`,
+        icon: '/favicon.ico',
+        badge: '/favicon.ico',
+        tag: 'welcome-notification',
+        requireInteraction: true,
+        silent: false
+      })
+    }
+  }
+
   const {
     register,
     handleSubmit,
@@ -120,9 +150,15 @@ export default function SignUp() {
         localStorage.setItem('userName', data.name)
         localStorage.setItem('userId', result.userId)
         setSuccess(true)
+        
+        // Show notification after 2 seconds
+        setTimeout(() => {
+          showWelcomeNotification(data.name)
+        }, 2000)
+        
         setTimeout(() => {
           router.push('/dashboard')
-        }, 2000)
+        }, 4000) // Increased delay to show notification
       } else {
         // Show specific error messages
         if (result.error.includes('pehle se register hai')) {

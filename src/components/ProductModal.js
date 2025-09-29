@@ -51,10 +51,18 @@ export default function ProductModal({ watch, isOpen, onClose, onAddToCart }) {
         <div className="flex flex-col lg:flex-row">
           {/* Product Image */}
           <div className="lg:w-1/2 p-6">
-            <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-4">
-              <div className="w-48 h-48 bg-gradient-to-br from-amber-200 to-amber-300 rounded-full flex items-center justify-center">
-                <span className="text-8xl">⌚</span>
-              </div>
+            <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mb-4 overflow-hidden">
+              {watch.image ? (
+                <img 
+                  src={watch.image} 
+                  alt={watch.name}
+                  className="w-full h-full object-cover rounded-2xl"
+                />
+              ) : (
+                <div className="w-48 h-48 bg-gradient-to-br from-amber-200 to-amber-300 rounded-full flex items-center justify-center">
+                  <span className="text-8xl">⌚</span>
+                </div>
+              )}
             </div>
             
             {/* Discount Badge */}
@@ -142,21 +150,13 @@ export default function ProductModal({ watch, isOpen, onClose, onAddToCart }) {
             {/* Action Buttons */}
             <div className="flex space-x-4">
               <button
-                onClick={handleAddToCart}
-                disabled={!watch.inStock || isAddingToCart}
-                className="flex-1 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center"
+                onClick={() => window.open('https://wa.me/03098789014', '_blank')}
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center"
               >
-                {isAddingToCart ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Adding...
-                  </div>
-                ) : (
-                  <div className="flex items-center">
-                    <ShoppingCart className="h-5 w-5 mr-2" />
-                    Add to Cart
-                  </div>
-                )}
+                <div className="flex items-center">
+                  <span className="mr-2">📱</span>
+                  Payment Method
+                </div>
               </button>
               
               <button
