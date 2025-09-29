@@ -247,8 +247,8 @@ export default function Dashboard() {
           onClose={() => setIsFilterOpen(false)}
         />
 
-      {/* Main Content */}
-        <main className="flex-1 lg:ml-80 lg:pl-4">
+            {/* Main Content */}
+            <main className="flex-1 lg:ml-72 lg:pl-2">
           <div className="p-3 sm:p-6 lg:p-8">
             {/* Controls */}
             <div className="flex flex-col space-y-4 mb-6 sm:mb-8">
@@ -307,9 +307,9 @@ export default function Dashboard() {
                 <p className="text-gray-500">Try adjusting your filters or search terms.</p>
               </div>
             ) : (
-              <div className={`grid gap-4 sm:gap-6 lg:gap-8 ${
+              <div className={`grid gap-6 sm:gap-8 ${
                 viewMode === 'grid' 
-                  ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3' 
+                  ? 'grid-cols-1 sm:grid-cols-2' 
                   : 'grid-cols-1'
               }`}>
                 {filteredWatches.map((watch) => (
