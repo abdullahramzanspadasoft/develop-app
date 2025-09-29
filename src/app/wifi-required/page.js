@@ -9,11 +9,31 @@ export default function WiFiRequired() {
   const checkConnection = () => {
     setIsChecking(true)
     
-    // Simulate connection check
+    // Check connection without reload
     setTimeout(() => {
       setIsChecking(false)
-      // Reload page to check connection again
-      window.location.reload()
+      
+      // Check if now on WiFi
+      if (navigator.connection) {
+        const connection = navigator.connection
+        const isWiFi = connection.type === 'wifi' || 
+                       connection.effectiveType === '4g' || 
+                       connection.effectiveType === '3g'
+        
+        if (isWiFi) {
+          // Redirect to homepage if WiFi is now available
+          window.location.href = '/'
+        }
+      } else {
+        // Check local network
+        const isLocalNetwork = window.location.hostname.includes('192.168') ||
+                              window.location.hostname.includes('10.0') ||
+                              window.location.hostname.includes('172.')
+        
+        if (isLocalNetwork) {
+          window.location.href = '/'
+        }
+      }
     }, 2000)
   }
 

@@ -9,6 +9,13 @@ export default function WiFiRestriction() {
 
   useEffect(() => {
     const checkConnection = () => {
+      // Allow localhost for development
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        setIsWiFiConnected(true)
+        setIsChecking(false)
+        return
+      }
+
       // Check if user is on WiFi
       if (navigator.connection) {
         const connection = navigator.connection
@@ -20,9 +27,7 @@ export default function WiFiRestriction() {
         setIsChecking(false)
       } else {
         // Fallback: Check if user is on local network (WiFi)
-        const isLocalNetwork = window.location.hostname === 'localhost' || 
-                              window.location.hostname === '127.0.0.1' ||
-                              window.location.hostname.includes('192.168') ||
+        const isLocalNetwork = window.location.hostname.includes('192.168') ||
                               window.location.hostname.includes('10.0') ||
                               window.location.hostname.includes('172.')
         
@@ -31,23 +36,10 @@ export default function WiFiRestriction() {
       }
     }
 
-    // Check connection immediately
+    // Check connection only once on mount
     checkConnection()
 
-    // Check connection every 5 seconds
-    const interval = setInterval(checkConnection, 5000)
-
-    // Listen for connection changes
-    if (navigator.connection) {
-      navigator.connection.addEventListener('change', checkConnection)
-    }
-
-    return () => {
-      clearInterval(interval)
-      if (navigator.connection) {
-        navigator.connection.removeEventListener('change', checkConnection)
-      }
-    }
+    // Don't check repeatedly to avoid reload loop
   }, [])
 
   if (isChecking) {

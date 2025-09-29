@@ -3,6 +3,16 @@ import { NextResponse } from 'next/server'
 
 export default withAuth(
   function middleware(req) {
+    // Allow localhost and development
+    if (req.nextUrl.hostname === 'localhost' || req.nextUrl.hostname === '127.0.0.1') {
+      return NextResponse.next()
+    }
+    
+    // Allow wifi-required page to avoid redirect loop
+    if (req.nextUrl.pathname === '/wifi-required') {
+      return NextResponse.next()
+    }
+    
     // WiFi restriction check
     const userAgent = req.headers.get('user-agent') || ''
     const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
@@ -13,11 +23,6 @@ export default withAuth(
                    req.headers.get('x-forwarded-for')?.includes('192.168') ||
                    req.headers.get('x-forwarded-for')?.includes('10.0') ||
                    req.headers.get('x-forwarded-for')?.includes('172.')
-    
-    // Allow localhost and development
-    if (req.nextUrl.hostname === 'localhost' || req.nextUrl.hostname === '127.0.0.1') {
-      return NextResponse.next()
-    }
     
     // Block if mobile and not WiFi
     if (isMobile && !isWiFi) {
