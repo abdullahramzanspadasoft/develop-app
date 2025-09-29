@@ -52,7 +52,7 @@ export const authOptions = {
         )
 
         if (!isPasswordValid) {
-          throw new Error('Is email ke liye galat password hai')
+          throw new Error('Is email ke liye galat password hai. Sahi password enter karein.')
         }
 
         // Success - return user data

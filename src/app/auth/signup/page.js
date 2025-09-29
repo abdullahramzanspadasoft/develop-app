@@ -118,9 +118,10 @@ export default function SignUp() {
         // Store user email in localStorage after successful signup
         localStorage.setItem('userEmail', data.email)
         localStorage.setItem('userName', data.name)
+        localStorage.setItem('userId', result.userId)
         setSuccess(true)
         setTimeout(() => {
-          router.push('/auth/signin')
+          router.push('/dashboard')
         }, 2000)
       } else {
         // Show specific error messages
@@ -149,7 +150,7 @@ export default function SignUp() {
               Account Created Successfully!
             </h2>
             <p className="text-gray-600 mb-6">
-              Your account has been created. Redirecting to sign in...
+              Your account has been created successfully! Redirecting to dashboard...
             </p>
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
           </div>

@@ -125,6 +125,8 @@ export default function SignIn() {
           setError('Ye email database mein exist nahi karta. Pehle signup karein.')
         } else if (result.error.includes('galat password hai')) {
           setError('Is email ke liye galat password hai. Sahi password enter karein.')
+        } else if (result.error.includes('Sahi password enter karein')) {
+          setError('Password galat hai. Sahi password enter karein.')
         } else if (result.error.includes('Email aur password dono required')) {
           setError('Email aur password dono required hain.')
         } else {
