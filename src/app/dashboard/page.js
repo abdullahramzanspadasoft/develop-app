@@ -12,13 +12,15 @@ import {
   Grid, 
   List,
   Heart,
-  Star
+  Star,
+  Mail
 } from 'lucide-react'
 import Link from 'next/link'
 import ProductCard from '@/components/ProductCard'
 import FilterSidebar from '@/components/FilterSidebar'
 import ShoppingCartComponent from '@/components/ShoppingCart'
 import ProductModal from '@/components/ProductModal'
+import GmailVerificationClean from '@/components/GmailVerificationClean'
 import { watches, categories, priceRanges } from '@/data/watches'
 
 export default function Dashboard() {
@@ -40,6 +42,7 @@ export default function Dashboard() {
   const [favorites, setFavorites] = useState([])
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [isProductModalOpen, setIsProductModalOpen] = useState(false)
+  const [showGmailVerification, setShowGmailVerification] = useState(false)
 
   useEffect(() => {
     // Get data from localStorage
@@ -203,6 +206,19 @@ export default function Dashboard() {
             </div>
 
             <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* Gmail Verification Button */}
+              <button
+                onClick={() => setShowGmailVerification(!showGmailVerification)}
+                className={`p-2 transition-colors ${
+                  showGmailVerification 
+                    ? 'text-green-600 bg-green-50' 
+                    : 'text-gray-600 hover:text-green-600'
+                }`}
+                title="Gmail Verification"
+              >
+                <Mail className="h-5 w-5 sm:h-6 sm:w-6" />
+              </button>
+
               {/* Cart Button */}
               <button
                 onClick={() => setIsCartOpen(true)}
@@ -250,6 +266,14 @@ export default function Dashboard() {
             {/* Main Content */}
             <main className="flex-1 lg:ml-72 lg:pl-2">
           <div className="p-3 sm:p-6 lg:p-8">
+            
+            {/* Gmail Verification Section */}
+            {showGmailVerification && (
+              <div className="mb-8">
+                <GmailVerificationClean />
+              </div>
+            )}
+            
             {/* Controls */}
             <div className="flex flex-col space-y-4 mb-6 sm:mb-8">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">

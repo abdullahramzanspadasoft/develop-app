@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
-const prisma = new PrismaClient()
+// Force dynamic rendering to avoid build-time issues
+export const dynamic = 'force-dynamic'
 
 export async function POST(request) {
   try {
@@ -23,6 +23,10 @@ export async function POST(request) {
       )
     }
 
+    // Dynamic import to avoid build-time issues
+    const { PrismaClient } = await import('@prisma/client')
+    const prisma = new PrismaClient()
+
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email }
@@ -38,17 +42,23 @@ export async function POST(request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    // Create user
+    // Create user (simple version - no email verification)
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
+        emailVerified: true, // Skip email verification for simplicity
       },
     })
 
     return NextResponse.json(
-      { message: 'User created successfully', userId: user.id },
+      { 
+        message: 'User created successfully!', 
+        userId: user.id,
+        email: user.email,
+        name: user.name
+      },
       { status: 201 }
     )
   } catch (error) {

@@ -113,13 +113,26 @@ export default function SignIn() {
     setError('')
 
     try {
-      const result = await signIn('credentials', {
-        email: data.email,
-        password: data.password,
-        redirect: false,
+      const response = await fetch('/api/auth/credentials', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
       })
 
-      if (result?.error) {
+      const result = await response.json()
+
+      if (response.ok) {
+        // Store user data in localStorage
+        localStorage.setItem('userEmail', result.email)
+        localStorage.setItem('userName', result.name || '')
+        localStorage.setItem('userId', result.id)
+        router.push('/dashboard')
+      } else {
         // Show specific error messages
         if (result.error.includes('email database mein exist nahi karta')) {
           setError('Ye email database mein exist nahi karta. Pehle signup karein.')
@@ -130,16 +143,7 @@ export default function SignIn() {
         } else if (result.error.includes('Email aur password dono required')) {
           setError('Email aur password dono required hain.')
         } else {
-          setError('Login failed. Please try again.')
-        }
-      } else {
-        const session = await getSession()
-        if (session) {
-          // Store user email in localStorage
-          localStorage.setItem('userEmail', session.user.email)
-          localStorage.setItem('userName', session.user.name || '')
-          localStorage.setItem('userId', session.user.id)
-          router.push('/dashboard')
+          setError(result.error || 'Login failed. Please try again.')
         }
       }
     } catch (error) {
