@@ -37,10 +37,20 @@ export async function GET(request) {
       return NextResponse.json({ error: 'No access token available' }, { status: 401 })
     }
 
-    // Create OAuth2 client
+    // Create OAuth2 client with build-safe environment access
+    const googleClientId = typeof process !== 'undefined' ? process.env.GOOGLE_CLIENT_ID : undefined
+    const googleClientSecret = typeof process !== 'undefined' ? process.env.GOOGLE_CLIENT_SECRET : undefined
+    
+    if (!googleClientId || !googleClientSecret) {
+      return NextResponse.json(
+        { error: 'Google OAuth not configured. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.' },
+        { status: 500 }
+      )
+    }
+    
     const oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET
+      googleClientId,
+      googleClientSecret
     )
     
     oauth2Client.setCredentials({

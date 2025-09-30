@@ -1,24 +1,8 @@
 import NextAuth from 'next-auth'
-import GoogleProvider from 'next-auth/providers/google'
-import FacebookProvider from 'next-auth/providers/facebook'
 
-// Build-safe auth configuration - no database operations during build
+// Build-safe auth configuration - minimal configuration for build
 export const authOptions = {
-  providers: [
-    // Only add providers if environment variables are available
-    ...(typeof process !== 'undefined' && process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      })
-    ] : []),
-    ...(typeof process !== 'undefined' && process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET ? [
-      FacebookProvider({
-        clientId: process.env.FACEBOOK_CLIENT_ID,
-        clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      })
-    ] : []),
-  ],
+  providers: [],
   session: {
     strategy: 'jwt',
   },
@@ -40,7 +24,35 @@ export const authOptions = {
     signIn: '/auth/signin',
     signUp: '/auth/signup',
   },
-  secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build',
+  secret: typeof process !== 'undefined' ? (process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build') : 'fallback-secret-for-build',
+}
+
+// Only add providers at runtime, not during build
+if (typeof process !== 'undefined' && typeof window === 'undefined') {
+  try {
+    const { GoogleProvider } = require('next-auth/providers/google')
+    const { FacebookProvider } = require('next-auth/providers/facebook')
+    
+    if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+      authOptions.providers.push(
+        GoogleProvider({
+          clientId: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        })
+      )
+    }
+    
+    if (process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET) {
+      authOptions.providers.push(
+        FacebookProvider({
+          clientId: process.env.FACEBOOK_CLIENT_ID,
+          clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+        })
+      )
+    }
+  } catch (error) {
+    console.warn('Could not load OAuth providers:', error.message)
+  }
 }
 
 export default NextAuth(authOptions)

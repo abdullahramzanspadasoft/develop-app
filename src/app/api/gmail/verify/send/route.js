@@ -136,14 +136,26 @@ export async function POST(request) {
       )
     }
 
-    // Configure email transporter
+    // Configure email transporter with build-safe environment access
+    const smtpHost = typeof process !== 'undefined' ? process.env.SMTP_HOST : undefined
+    const smtpPort = typeof process !== 'undefined' ? process.env.SMTP_PORT : undefined
+    const smtpUser = typeof process !== 'undefined' ? process.env.SMTP_USER : undefined
+    const smtpPass = typeof process !== 'undefined' ? process.env.SMTP_PASS : undefined
+    
+    if (!smtpUser || !smtpPass) {
+      return NextResponse.json(
+        { error: 'Email service not configured. Please set SMTP_USER and SMTP_PASS environment variables.' },
+        { status: 500 }
+      )
+    }
+    
     const transporter = nodemailer.createTransporter({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.SMTP_PORT) || 587,
+      host: smtpHost || 'smtp.gmail.com',
+      port: parseInt(smtpPort) || 587,
       secure: false,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
+        user: smtpUser,
+        pass: smtpPass
       },
       tls: {
         rejectUnauthorized: false
@@ -164,7 +176,7 @@ export async function POST(request) {
     // Send verification email
     try {
       await transporter.sendMail({
-        from: `"Watch Store" <${process.env.SMTP_USER}>`,
+        from: `"Watch Store" <${smtpUser}>`,
         to: email,
         subject: 'Your Gmail Verification Code',
         html: `
