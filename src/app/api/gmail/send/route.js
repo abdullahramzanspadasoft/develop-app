@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/lib/auth'
 
 // Dynamic import for googleapis to avoid build issues
 let google
@@ -24,18 +22,19 @@ export async function POST(request) {
       )
     }
 
-    const session = await getServerSession(authOptions)
+    // Authentication temporarily disabled
+    // const session = await getServerSession(authOptions)
     
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // if (!session?.user?.email) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // }
 
-    // Get access token from session
-    const accessToken = session.accessToken
+    // Access token temporarily disabled
+    // const accessToken = session.accessToken
     
-    if (!accessToken) {
-      return NextResponse.json({ error: 'No access token available' }, { status: 401 })
-    }
+    // if (!accessToken) {
+    //   return NextResponse.json({ error: 'No access token available' }, { status: 401 })
+    // }
 
     // Parse request body
     const { to, subject, body } = await request.json()
@@ -63,9 +62,10 @@ export async function POST(request) {
       googleClientSecret
     )
     
-    oauth2Client.setCredentials({
-      access_token: accessToken
-    })
+    // OAuth2 credentials temporarily disabled
+    // oauth2Client.setCredentials({
+    //   access_token: accessToken
+    // })
 
     // Create Gmail API instance
     const gmail = google.gmail({ version: 'v1', auth: oauth2Client })
